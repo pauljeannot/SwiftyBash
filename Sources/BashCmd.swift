@@ -14,7 +14,7 @@ import Foundation
 public struct BashCmd {
 
     /// Bash command to run
-    var command = ""
+    private var command = ""
 
     /**
      Initialize a BashCmd object.
@@ -24,7 +24,7 @@ public struct BashCmd {
         - args: The **arguments** to pass to the command
         - from: The **entry point** you want the command to be *executed from*
     */
-    init(_ cmd:String, args:String..., from:String = ".") {
+    public init(_ cmd:String, args:String..., from:String = ".") {
         self.command = (from != ".") ? "cd \(from) && " : ""
         self.command += cmd
         self.command += " " + args.joined(separator: " ")
@@ -40,7 +40,7 @@ public struct BashCmd {
         Output of the bash command *(corresponding to stdout)*
     */
     @discardableResult
-    func run(outputType:BashOutputType = .string(.raw)) throws -> String? {
+    public func run(outputType:BashOutputType = .string(.raw)) throws -> String? {
 
         // Initialize process, stdout and stderr
         let process = Process()
@@ -108,7 +108,7 @@ public extension BashCmd {
      - returns:
      Newly BashCmd created with commands piped
      */
-    func pipe(_ pipedCmd:BashCmd) -> BashCmd {
+    public func pipe(_ pipedCmd:BashCmd) -> BashCmd {
         return BashCmd(command + " | " + pipedCmd.command)
     }
 
@@ -119,7 +119,7 @@ public extension BashCmd {
         - lhs: Pipe input stream
         - rhs: Pipe output stream
     */
-    static func | (lhs: BashCmd, rhs: BashCmd) -> BashCmd {
+    public static func | (lhs: BashCmd, rhs: BashCmd) -> BashCmd {
         return lhs.pipe(rhs)
     }
 }

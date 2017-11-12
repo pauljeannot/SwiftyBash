@@ -14,9 +14,9 @@ import Foundation
 public struct BashException: Error {
 
     /// Stderr value
-    let stderr:String
+    public let stderr:String
     /// Stdout value
-    let stdout:String
+    public let stdout:String
 }
 
 /// To understand the difference, you can try

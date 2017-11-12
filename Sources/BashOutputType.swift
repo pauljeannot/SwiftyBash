@@ -37,7 +37,7 @@ public extension String {
 
     /// Returns a new string made by removing from both ends on each new line of the String characters
     /// contained in a given character set.
-    func trimmingCharactersEachNewLine(in set: CharacterSet) -> String {
+    public func trimmingCharactersEachNewLine(in set: CharacterSet) -> String {
         let lines = split(separator: "\n")
         let linesTrimmed = lines.map({ $0.trimmingCharacters(in: set) })
         return linesTrimmed.joined(separator: "\n")
