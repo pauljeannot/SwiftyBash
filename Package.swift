@@ -6,9 +6,6 @@ import PackageDescription
 let package = Package(
     name: "SwiftyBash",
     targets: [
-        .target(
-            name: "SwiftyBash",
-            dependencies: ["SwiftyBashCore"]),
-        .target(name: "SwiftyBashCore")
+        .target(name: "SwiftyBash")
     ]
 )
