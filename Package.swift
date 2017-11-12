@@ -5,7 +5,17 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftyBash",
+    products: [
+        .library(name: "SwiftyBash", targets: ["SwiftyBash"])
+    ],
     targets: [
-        .target(name: "SwiftyBash")
+        .target(
+            name: "SwiftyBash",
+            path: "Sources"
+        ),
+        .testTarget(
+            name: "SwiftyBashTests",
+            dependencies: ["SwiftyBash"]
+        )
     ]
 )
