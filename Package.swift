@@ -13,9 +13,5 @@ let package = Package(
             name: "SwiftyBash",
             path: "Sources"
         ),
-        .testTarget(
-            name: "SwiftyBashTests",
-            dependencies: ["SwiftyBash"]
-        )
     ]
 )
