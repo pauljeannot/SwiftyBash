@@ -11,8 +11,8 @@ import Foundation
 // MARK: - BashException structure
 
 /// When an error occurs during the bash script execution, a BashException is thrown, with stderr and stdout values
-struct BashException: Error {
-    
+public struct BashException: Error {
+
     /// Stderr value
     let stderr:String
     /// Stdout value

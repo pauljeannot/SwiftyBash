@@ -11,29 +11,29 @@ import Foundation
 // MARK: - Enum BashOutputType
 
 /// Describes the output of a BashCmd or BashPipe
-enum BashOutputType {
-    
+public enum BashOutputType {
+
     /// Describes the format of string to return
-    enum StringFormat {
-        
+    public enum StringFormat {
+
         /// Returns the output as it is
         case raw
         /// Returns the output without white spaces
         case whiteSpacesTrimmed
     }
-    
+
     /// Returns a string in StringFormat
     /// Argument:
     ///     - format:StringFormat
     case string(StringFormat)
-    
+
     /// Write the output in a file
     /// Argument:
     ///     - Filename:String
     case file(String)
 }
 
-extension String {
+public extension String {
 
     /// Returns a new string made by removing from both ends on each new line of the String characters
     /// contained in a given character set.
