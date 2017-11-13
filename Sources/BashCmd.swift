@@ -71,16 +71,17 @@ public struct BashCmd {
 
         // Read stdout stream and create string from it
         let stdoutData = stdout.fileHandleForReading.readDataToEndOfFile()
-        let stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8)
+        let stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8) ?? ""
 
         // Read stderr steam an create string from it
         let stderrData = stderr.fileHandleForReading.readDataToEndOfFile()
-        let stderrString = String(data: stderrData, encoding: String.Encoding.utf8)
+        let stderrString = String(data: stderrData, encoding: String.Encoding.utf8) ?? ""
 
         // If stderr isn't empty, throw a BashException with stderr and stdout
-        if let stderrString = stderrString, stderrString != "" {
-            throw BashException(stderr:stderrString, stdout:stdoutString ?? "")
+        if process.terminationStatus != 0 {
+            throw BashException(stderr:stderrString, stdout:stdoutString)
         }
+
 
         // If we are here, it means that everything went fine
         // Prepare the stdout string according to the outputType given
@@ -90,7 +91,7 @@ public struct BashCmd {
             case .raw:
                 return stdoutString
             case .whiteSpacesTrimmed:
-                return stdoutString?.trimmingCharactersEachNewLine(in: .whitespacesAndNewlines)
+                return stdoutString.trimmingCharactersEachNewLine(in: .whitespacesAndNewlines)
             }
         default:
             return nil
