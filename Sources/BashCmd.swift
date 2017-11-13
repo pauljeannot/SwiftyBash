@@ -66,11 +66,11 @@ public struct BashCmd {
 
         // Read stdout stream and create string from it
         let stdoutData = stdout.fileHandleForReading.readDataToEndOfFile()
-        let stdoutString = NSString(data: stdoutData, encoding: String.Encoding.utf8.rawValue) as String?
+        let stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8)
 
         // Read stderr steam an create string from it
         let stderrData = stderr.fileHandleForReading.readDataToEndOfFile()
-        let stderrString = NSString(data: stderrData, encoding: String.Encoding.utf8.rawValue) as String?
+        let stderrString = String(data: stderrData, encoding: String.Encoding.utf8)
 
         // If stderr isn't empty, throw a BashException with stderr and stdout
         if let stderrString = stderrString, stderrString != "" {
