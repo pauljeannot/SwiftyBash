@@ -14,6 +14,7 @@ class SwiftyBashTests: XCTestCase {
             guard let mkdir = try BashCmd("mkdir", args:testDirectoryName).run(), mkdir == "" else { XCTFail(); return }
         }
         catch {
+            print(error as? BashException)
             XCTFail()
         }
     }
@@ -35,6 +36,7 @@ class SwiftyBashTests: XCTestCase {
             }
         }
         catch {
+            print(error as? BashException)
             XCTFail()
         }
     }
@@ -47,6 +49,7 @@ class SwiftyBashTests: XCTestCase {
             XCTAssertEqual(echoMessage, echo)
         }
         catch {
+            print(error as? BashException)
             XCTFail()
         }
     }
@@ -62,6 +65,7 @@ class SwiftyBashTests: XCTestCase {
             guard let numberOfLines = try (ls_all | wc).run(outputType: .string(.whiteSpacesTrimmed)), Int(numberOfLines) == 3 else { XCTFail(); return }
         }
         catch {
+            print(error as? BashException)
             XCTFail()
         }
         
@@ -89,6 +93,7 @@ class SwiftyBashTests: XCTestCase {
             guard let cat = try BashCmd("cat", args:filename, from:testDirectoryName).run(), ls_result == cat else { XCTFail(); return }
         }
         catch {
+            print(error as? BashException)
             XCTFail()
         }
         
@@ -107,6 +112,7 @@ class SwiftyBashTests: XCTestCase {
                 guard error.stdout == "", error.stderr.contains("No such file or directory") else { XCTFail(); return }
             }
             else {
+                print(error as? BashException)
                 XCTFail()
             }
         }
@@ -126,6 +132,7 @@ class SwiftyBashTests: XCTestCase {
                 guard error.stdout == "", error.stderr == "\(text)\n" else { XCTFail(); return }
             }
             else {
+                print(error as? BashException)
                 XCTFail()
             }
         }
