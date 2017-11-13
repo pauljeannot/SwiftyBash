@@ -14,7 +14,13 @@ import Foundation
 public struct BashCmd {
 
     /// Bash command to run
-    private var command = ""
+    var command:String {
+        get {
+            return _command
+        }
+    }
+    
+    private var _command = ""
 
     /**
      Initialize a BashCmd object.
@@ -25,9 +31,9 @@ public struct BashCmd {
         - from: The **entry point** you want the command to be *executed from*
     */
     public init(_ cmd:String, args:String..., from:String = ".") {
-        self.command = (from != ".") ? "cd \(from) && " : ""
-        self.command += cmd
-        self.command += " " + args.joined(separator: " ")
+        self._command = (from != ".") ? "cd \(from) && " : ""
+        self._command += cmd
+        self._command += " " + args.joined(separator: " ")
     }
 
     /**
@@ -54,7 +60,7 @@ public struct BashCmd {
         process.standardError = stderr
 
         // If the output type is set on `.file`, redirect stdout to `filename`.
-        var finalCommand = command
+        var finalCommand = _command
         if case .file(let filename) = outputType {
             finalCommand += " > \(filename)"
         }
@@ -66,7 +72,13 @@ public struct BashCmd {
 
         // Read stdout stream and create string from it
         let stdoutData = stdout.fileHandleForReading.readDataToEndOfFile()
-        let stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8)
+        var stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8)
+
+        // Remove last \n at the end of the output string
+        if let _stdoutString = stdoutString, _stdoutString.hasSuffix("\n") {
+            let endIndex = _stdoutString.index(before: _stdoutString.endIndex)
+            stdoutString = String(_stdoutString[..<endIndex])
+        }
 
         // Read stderr steam an create string from it
         let stderrData = stderr.fileHandleForReading.readDataToEndOfFile()
@@ -109,7 +121,7 @@ public extension BashCmd {
      Newly BashCmd created with commands piped
      */
     public func pipe(_ pipedCmd:BashCmd) -> BashCmd {
-        return BashCmd(command + " | " + pipedCmd.command)
+        return BashCmd(_command + " | " + pipedCmd._command)
     }
 
     /**
