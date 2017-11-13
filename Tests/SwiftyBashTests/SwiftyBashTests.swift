@@ -14,7 +14,6 @@ class SwiftyBashTests: XCTestCase {
             guard let mkdir = try BashCmd("mkdir", args:testDirectoryName).run(), mkdir == "" else { XCTFail(); return }
         }
         catch {
-            print(error as? BashException)
             XCTFail()
         }
     }
@@ -36,7 +35,6 @@ class SwiftyBashTests: XCTestCase {
             }
         }
         catch {
-            print(error as? BashException)
             XCTFail()
         }
     }
@@ -44,22 +42,12 @@ class SwiftyBashTests: XCTestCase {
     // MARK: - BashCmd Tests
     func testEchoBashCommand() {
         let echoMessage = "Hello, World!"
-        print(echoMessage)
         do {
-            print("0")
             let cmd = BashCmd("echo", args:echoMessage)
-            print("1")
-            guard let echo = try cmd.run() else {
-              print("2")
-            XCTFail()
-            return
-          }
-            print("4")
+            guard let echo = try cmd.run(outputType: .string(.whiteSpacesTrimmed)) else { XCTFail() ; return }
             XCTAssertEqual(echoMessage, echo)
         }
         catch {
-            print("10")
-            print(error as? BashException)
             XCTFail()
         }
     }
@@ -75,7 +63,6 @@ class SwiftyBashTests: XCTestCase {
             guard let numberOfLines = try (ls_all | wc).run(outputType: .string(.whiteSpacesTrimmed)), Int(numberOfLines) == 3 else { XCTFail(); return }
         }
         catch {
-            print(error as? BashException)
             XCTFail()
         }
 
@@ -90,6 +77,7 @@ class SwiftyBashTests: XCTestCase {
             let filename = "file.txt"
             let ls_all = BashCmd("ls", args:"-al", from:testDirectoryName)
             guard ls_all.command == "cd \(testDirectoryName) && ls -al" else { XCTFail(); return }
+
             // Write `ls` to file
             guard let ls_result = try ls_all.run() else { XCTFail(); return }
             let write_result = try BashCmd("echo", args:"'\(ls_result)'", from:testDirectoryName).run(outputType: .file(filename))
@@ -100,10 +88,10 @@ class SwiftyBashTests: XCTestCase {
             guard let numberOfLines = try (ls_all | wc).run(outputType: .string(.whiteSpacesTrimmed)), Int(numberOfLines) == 4 else { XCTFail(); return }
 
             // Cat the created file and compare with the string version of the file
-            guard let cat = try BashCmd("cat", args:filename, from:testDirectoryName).run(), ls_result == cat else { XCTFail(); return }
+            // Add \n to ls_result because `cat` is adding one
+            guard let cat = try BashCmd("cat", args:filename, from:testDirectoryName).run(), (ls_result + "\n") == cat else { XCTFail(); return }
         }
         catch {
-            print(error as? BashException)
             XCTFail()
         }
 
@@ -122,7 +110,6 @@ class SwiftyBashTests: XCTestCase {
                 guard error.stdout == "", error.stderr.contains("No such file or directory") else { XCTFail(); return }
             }
             else {
-                print(error as? BashException)
                 XCTFail()
             }
         }
@@ -142,7 +129,6 @@ class SwiftyBashTests: XCTestCase {
                 guard error.stdout == "", error.stderr == "\(text)\n" else { XCTFail(); return }
             }
             else {
-                print(error as? BashException)
                 XCTFail()
             }
         }

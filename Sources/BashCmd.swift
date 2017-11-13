@@ -19,7 +19,7 @@ public struct BashCmd {
             return _command
         }
     }
-    
+
     private var _command = ""
 
     /**
@@ -55,7 +55,6 @@ public struct BashCmd {
 
         // Setup process
         process.launchPath = "/bin/bash"
-        process.standardInput = nil
         process.standardOutput = stdout
         process.standardError = stderr
 
@@ -72,13 +71,7 @@ public struct BashCmd {
 
         // Read stdout stream and create string from it
         let stdoutData = stdout.fileHandleForReading.readDataToEndOfFile()
-        var stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8)
-
-        // Remove last \n at the end of the output string
-        if let _stdoutString = stdoutString, _stdoutString.hasSuffix("\n") {
-            let endIndex = _stdoutString.index(before: _stdoutString.endIndex)
-            stdoutString = String(_stdoutString[..<endIndex])
-        }
+        let stdoutString = String(data:stdoutData, encoding:String.Encoding.utf8)
 
         // Read stderr steam an create string from it
         let stderrData = stderr.fileHandleForReading.readDataToEndOfFile()
@@ -97,7 +90,7 @@ public struct BashCmd {
             case .raw:
                 return stdoutString
             case .whiteSpacesTrimmed:
-                return stdoutString?.trimmingCharactersEachNewLine(in: .whitespaces)
+                return stdoutString?.trimmingCharactersEachNewLine(in: .whitespacesAndNewlines)
             }
         default:
             return nil
