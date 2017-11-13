@@ -5,9 +5,9 @@ import Foundation
 infix operator |: MultiplicationPrecedence
 
 class SwiftyBashTests: XCTestCase {
-    
+
     let testDirectoryName = "TestDirectory"
-    
+
     // MARK: - Setup test environment
     func setupTestFolder() {
         do {
@@ -18,7 +18,7 @@ class SwiftyBashTests: XCTestCase {
             XCTFail()
         }
     }
-    
+
     func removeTestFolderIfExists() {
         do {
             let ls = BashCmd("ls")
@@ -26,10 +26,10 @@ class SwiftyBashTests: XCTestCase {
             let wc = BashCmd("wc", args:"-l")
             // If exists the folder exists
             guard let result = try (ls | grep | wc).run(outputType: .string(.whiteSpacesTrimmed)), Int(result) == 1 else { return }
-            
+
             // Remove it
             guard let rm = try BashCmd("rm", args: "-r", testDirectoryName).run(), rm == "" else { XCTFail(); return }
-            
+
             // After removal, check if it was well removed
             if let resultAfterRemoval = try (ls | grep | wc).run(outputType: .string(.whiteSpacesTrimmed)), Int(resultAfterRemoval) != 0  {
                 XCTFail()
@@ -40,15 +40,25 @@ class SwiftyBashTests: XCTestCase {
             XCTFail()
         }
     }
-    
+
     // MARK: - BashCmd Tests
     func testEchoBashCommand() {
         let echoMessage = "Hello, World!"
+        print(echoMessage)
         do {
-            guard let echo = try BashCmd("echo", args:echoMessage).run() else { XCTFail(); return }
+            print("0")
+            let cmd = BashCmd("echo", args:echoMessage)
+            print("1")
+            guard let echo = try cmd.run() else {
+              print("2")
+            XCTFail()
+            return
+          }
+            print("4")
             XCTAssertEqual(echoMessage, echo)
         }
         catch {
+            print("10")
             print(error as? BashException)
             XCTFail()
         }
@@ -68,14 +78,14 @@ class SwiftyBashTests: XCTestCase {
             print(error as? BashException)
             XCTFail()
         }
-        
+
         removeTestFolderIfExists()
     }
-    
+
     func testWritingFile() {
         removeTestFolderIfExists()
         setupTestFolder()
-        
+
         do {
             let filename = "file.txt"
             let ls_all = BashCmd("ls", args:"-al", from:testDirectoryName)
@@ -84,7 +94,7 @@ class SwiftyBashTests: XCTestCase {
             guard let ls_result = try ls_all.run() else { XCTFail(); return }
             let write_result = try BashCmd("echo", args:"'\(ls_result)'", from:testDirectoryName).run(outputType: .file(filename))
             guard write_result == nil else { XCTFail(); return }
-            
+
             // Check the number of lines
             let wc = BashCmd("wc", args:"-l")
             guard let numberOfLines = try (ls_all | wc).run(outputType: .string(.whiteSpacesTrimmed)), Int(numberOfLines) == 4 else { XCTFail(); return }
@@ -96,13 +106,13 @@ class SwiftyBashTests: XCTestCase {
             print(error as? BashException)
             XCTFail()
         }
-        
+
         removeTestFolderIfExists()
     }
-    
+
     func testThrowingError() {
         removeTestFolderIfExists()
-        
+
         do {
             let _ = try BashCmd("cd", args:testDirectoryName).run()
             XCTFail()
@@ -117,11 +127,11 @@ class SwiftyBashTests: XCTestCase {
             }
         }
     }
-    
+
     func testThrowingError2() {
-        
+
         let text = "my errz"
-        
+
         do {
             let bashCmd = BashCmd("echo", args:"'\(text)'", ">", "/dev/stderr")
             guard bashCmd.command == "echo 'my errz' > /dev/stderr" else { XCTFail(); return }
@@ -137,13 +147,13 @@ class SwiftyBashTests: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - String extension Test
     /// One line test
     func testTrimmingNewLinesString() {
         let notTrimmedString = "  a   b  "
         let trimmedString = "a   b"
-        
+
         XCTAssertEqual(trimmedString, notTrimmedString.trimmingCharactersEachNewLine(in:.whitespaces))
     }
 
@@ -161,15 +171,15 @@ c    d
 """
         XCTAssertEqual(trimmedString2, notTrimmedString2.trimmingCharactersEachNewLine(in:.whitespaces))
     }
-    
+
     /// One-liner Multi-lines test
     func testTrimmingNewLinesString3() {
         let notTrimmedString3 = "  a   b  \n     o     \n c d e      "
         let trimmedString3 = "a   b\no\nc d e"
-        
+
         XCTAssertEqual(trimmedString3, notTrimmedString3.trimmingCharactersEachNewLine(in:.whitespaces))
     }
-    
+
     static var allTests = [
         ("testEchoBashCommand", testEchoBashCommand),
         ("testSetBashCommands", testSetBashCommands),
