@@ -39,7 +39,8 @@ public extension String {
     /// contained in a given character set.
     public func trimmingCharactersEachNewLine(in set: CharacterSet) -> String {
         let lines = split(separator: "\n")
-        let linesTrimmed = lines.map({ $0.trimmingCharacters(in: set) })
+        // Need to transform each String.SubSequence aka Substring to String to avoid errors on Linux 16.04 with Swift 4.0
+        let linesTrimmed = lines.map({ String($0) }).map({ $0.trimmingCharacters(in: set) })
         return linesTrimmed.joined(separator: "\n")
     }
 }

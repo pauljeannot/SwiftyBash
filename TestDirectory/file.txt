@@ -1,0 +1,3 @@
+total 0
+drwxr-xr-x+  2 gum  staff   68 13 nov 19:24 .
+drwxr-xr-x+ 17 gum  staff  578 13 nov 19:24 ..
