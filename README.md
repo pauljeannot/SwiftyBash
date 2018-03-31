@@ -1,7 +1,8 @@
 ![SwiftyBash Logo : When Bash meets Swift](/swiftybash.png)
 
-![Swift 4.0 Badge](https://img.shields.io/badge/Swift-4.0-brightgreen.svg)
+![Swift 4.1 Badge](https://img.shields.io/badge/Swift-4.1-brightgreen.svg)
 ![Travis Badge](https://travis-ci.org/pauljeannot/SwiftyBash.svg?branch=master)
+![Plateform](https://img.shields.io/badge/Plateform-Mac%20%26%20Linux-lightgrey.svg)
 
 SwiftyBash is a Swift Bash scripting &amp; piping library, written in Swift.
 
